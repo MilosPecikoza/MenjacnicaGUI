@@ -2,6 +2,7 @@ package menjacnica.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputEvent;
@@ -29,12 +31,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class MenjacnicaGUI extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
-
+	private JList list;
+	MenjacnicaGUI m;
 	/**
 	 * Launch the application.
 	 */
@@ -55,6 +63,18 @@ public class MenjacnicaGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public MenjacnicaGUI() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+					int opcija = 
+						JOptionPane.showConfirmDialog(
+							null, "Da li zelite da izadjete?",
+							"Izlazak", JOptionPane.YES_NO_CANCEL_OPTION);
+					
+					if (opcija == JOptionPane.YES_OPTION)
+						System.exit(0);
+			}
+		});
 		setTitle("Menjacnica");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 689, 468);
@@ -68,17 +88,33 @@ public class MenjacnicaGUI extends JFrame {
 		JMenuItem mntmOpen = new JMenuItem("Open");
 		mntmOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				ucitaj();
 			}
 		});
 		mntmOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		mnFile.add(mntmOpen);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				sacuvaj();
+			}
+		});
 		mntmSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 		mnFile.add(mntmSave);
 		
 		JMenuItem mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int opcija = 
+						JOptionPane.showConfirmDialog(
+							null, "Da li zelite da izadjete?",
+							"Izlazak", JOptionPane.YES_NO_CANCEL_OPTION);
+					
+					if (opcija == JOptionPane.YES_OPTION)
+						System.exit(0);
+			}
+		});
 		mntmExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.ALT_MASK));
 		mnFile.add(mntmExit);
 		
@@ -86,6 +122,12 @@ public class MenjacnicaGUI extends JFrame {
 		menuBar.add(mnHelp);
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(m, 
+						"Milos Pecikoza","Autor",JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 		mnHelp.add(mntmAbout);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -112,7 +154,7 @@ public class MenjacnicaGUI extends JFrame {
 		scrollPane.setPreferredSize(new Dimension(2, 100));
 		contentPane.add(scrollPane, BorderLayout.SOUTH);
 		
-		JList list = new JList();
+		list = new JList();
 		list.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.GRAY, Color.GRAY, Color.GRAY, Color.GRAY));
 		scrollPane.setViewportView(list);
 		
@@ -172,4 +214,56 @@ public class MenjacnicaGUI extends JFrame {
 			}
 		});
 	}
+	
+	private void sacuvaj() {
+		JFileChooser fc = new JFileChooser();
+		
+		int opcija = fc.showSaveDialog(null);
+		
+		if (opcija == JFileChooser.APPROVE_OPTION) {
+			File f = fc.getSelectedFile();
+			
+			f.getAbsolutePath();
+		}
+	}
+	
+	private void ucitaj() {
+		JFileChooser fc = new JFileChooser();
+		
+		int opcija = fc.showOpenDialog(null);
+
+		if (opcija == JFileChooser.APPROVE_OPTION) {
+			File f = fc.getSelectedFile();
+			
+			
+			String p = f.getAbsolutePath();
+			/*p ="asa";
+			PrintWriter out;
+			try {
+				out = new PrintWriter(p);
+				list(out);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+			
+			
+			
+			/*try {
+				biblioteka.ucitajKnjige(f.getAbsolutePath());
+				prikaziSveKnjige();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(gp, 
+						e.getMessage(), "Greska",JOptionPane.ERROR_MESSAGE);
+			}*/
+		}
+	}
+	
+	/*public void ispisi (String isp) {
+		try {
+		list.setToolTipText(isp);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+	}*/
 }
